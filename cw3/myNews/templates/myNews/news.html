@@ -1,0 +1,129 @@
+{% extends 'myNews/base.html' %}
+
+{% load static %}
+{% block content %}
+    {%include 'myNews/nav.html'%}
+    <div>
+        <div class="container  mt-5">
+            <h1> {{article.title}}</h1>
+            <b> By {{article.author}}</b>
+            <b> Date {{article.date}}</b>
+            <!-- likes -->
+            <div>
+                <strong>Likes:{{article.num_likes}}</strong>
+                {% if user not in article.liked.all %}
+                    <button class="btn btn-success" id='like' data-article='{{article.id}}'>Like</button>
+                {% else %}
+                    <button class="btn btn-danger" id='like' data-article='{{article.id}}'>Unlike</button>
+                {% endif %}
+            </div>
+
+            <div class = "mt-4">
+            <img class="img-fluid" src="/static/img/{{article.article_pictures}}">
+            <div>
+            <div class = "mt-4">
+            <article>content: {{article.content}}</article>
+            </div>
+            <div class = "mt-3">
+                <h1>Comment Area</h1>
+                <hr>
+                <div>
+                    <!-- post comment -->
+                    <form method="post">
+                        {% csrf_token %}
+                        {{ comment_form }}
+                    </form>
+                    <input type="submit" value='Post comment' class="btn btn-success" id ='post_button'><hr>
+                </div>
+                <div>
+                    {% for comment in comments %}
+                        <!-- Review area -->
+                        <blockquote class="blockquote">
+                            <p>{{comment.content}}</p>
+                            <footer class="blockquote-footer">
+                                via {{ comment.user }} | {{comment.timestamp|timesince }} ago |
+                                {% if comment.children.count > 0 %}
+                                    {{comment.children.count}} comments
+                                {% endif %}
+                                <a href="#" class="comment-reply-btn">reply</a>
+                                <!-- edit/delete button -->
+                                {% if comment.user == user %}
+                                    <a href="#" data-toggle="modal" data-target="#editModal" data-comment="{{comment.id}}" data-content="{{comment.content}}" name="comment-edit-btn">| Edit</a>
+                                    <a href="#" comment-id="{{comment.id}}" class="comment-delete-btn" name="comment-delete-btn"> | Delete</a>
+                                {% endif %}
+                            </footer>
+                            <!-- reply area -->
+                            <div class="comment-reply" style="display: none">
+                                {% for child_comment in comment.children %}
+                                    <blockquote class="blockquote">
+                                        <p>{{child_comment.content}}</p>
+                                        <footer class="blockquote-footer">
+                                            Replied by {{ child_comment.user }} | {{child_comment.timestamp|timesince}} ago
+                                            <!-- edit/delete button -->
+                                            {% if child_comment.user == user %}
+                                                <a href="#" data-toggle="modal" data-target="#editModal" data-comment="{{child_comment.id}}" data-content="{{child_comment.content}}" name="comment-edit-btn">| Edit</a>
+                                                <a href="#" comment-id="{{child_comment.id}}" class="comment-delete-btn" name="comment-delete-btn"> | delete</a>
+                                            {% endif %}
+                                        </footer>
+                                    </blockquote>
+                                {% endfor %}
+                                <form method="post">
+                                    {% csrf_token %}
+                                    <div>
+                                        <textarea id="comment-id{{comment.id}}" cols="30" rows="2"></textarea>
+                                        <input type="hidden" name='parent_id' value="{{comment.id}}" id ='parent_id'>
+                                    </div>
+                                </form>
+                                <input id="replyb" type="button" class="btn btn-info btn-sm btn-reply" data-sid="{{comment.id}}" value="Reply">
+                                <hr>
+                            </div>
+                        </blockquote>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- model -->
+    <div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="exampleModalLabel">New Comment</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+              <form>
+                <div class="form-group">
+                  <label for="message-text" class="col-form-label">Comment:</label>
+                  <input type="text" style="display: none;">
+                  <textarea class="form-control" id="message-text"></textarea>
+                </div>
+              </form>
+            </div>
+            <div class="modal-footer">
+              <button class="btn btn-secondary" data-dismiss="modal">Close</button>
+              <button class="btn btn-info save-edit">Save changed</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <style>
+        img{
+         width:100%;
+        }
+        .comment-reply {
+            text-indent: 50px;
+        }
+        #replyb{
+            position: relative;
+            left: 50px;
+        }
+    </style>
+
+    {% include "myNews/ajax.html" %}
+{% endblock  %}

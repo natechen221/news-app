@@ -1,0 +1,57 @@
+{%  extends 'myNews/base.html' %}
+{% load static %}
+{% block content %}
+<style>
+	.profile-pic{
+		max-width: 250px;
+		margin: 0 auto;
+		border-radius: 40%;
+	}
+
+
+
+	 .container-fluid{
+	    padding-bottom: 11%;
+	    }
+
+
+
+
+</style>
+{%include 'myNews/nav.html'%}
+<div class = "container-fluid">
+<div class="row">
+
+	<div class="col-3 md-3">
+
+		<div class="card card-body">
+
+			<a class="btn btn-dark" href="{% url 'index' %}"> &#8592; Back to Profile</a>
+			<hr>
+			<h3 style="text-align: center">Profile Settings</h3>
+			<hr>
+			<img class="profile-pic" src="/static/img/{{user.userprofile.profile_picture}}" ><br>
+		</div>
+	</div>
+	<div class="col-md-9">
+		<div class="card card-body">
+			<form method="POST" action="" enctype="multipart/form-data">
+				{% csrf_token %}
+				<h4 class="card-title" id="currentuser">Logged in User: {{user.userprofile.username}}</h4>
+				<p class="card-text" id="email">Email: {{user.email}}</p>
+				<p class="card-text"id="dob">Birth Date: {{user.userprofile.birthdate}}</p>
+				<p class="card-text"id="favCat">
+					Favorite Category:
+					{% for category in user.userprofile.favorite_category.all %}
+						| <small>{{ category.name }}</small> |
+					{% endfor %}
+				</p>
+
+				<a class="btn btn-warning" href="{%url 'editprofile'%}" id="editprofile"> Edit Details</a>
+			</form>
+		</div>
+	</div>
+
+</div>
+</div>
+{% endblock %}

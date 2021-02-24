@@ -1,0 +1,51 @@
+{% extends 'myNews/base.html' %}
+
+{% load static %}
+{% block content %}
+  <div class="container">
+    <form method="POST" action="">
+      {% csrf_token %}
+      <p></p>
+      <div class = "padding ">
+      <h1 id="form-title">SIGN UP</h1>
+      <div class="form-group">
+        <p for="username">{{form.username.label}}</p>
+        {{form.username}}
+      </div>
+      <div class="form-group">
+        <label for="exampleInputEmail1">{{form.email.label}}</label>
+        {{form.email}}
+      </div>
+      <div class="form-group">
+        <label for="BirthDate">{{profile_form.BirthDate.label}}</label>
+        {{profile_form.BirthDate}}
+      </div>
+      <div class="form-group">
+        <label for="password1">{{form.password1.label}}</label>
+        {{form.password1}}
+      </div>
+      <div class="form-group">
+        <label for="password2">{{form.password2.label}}</label>
+        {{form.password2}}
+      </div>
+      {{form.errors}}
+      <button type="submit" class="btn btn-primary" name="Create User">Register</button>
+    </form>
+    <div class="mt-4">
+      Already have an account? <a href="{% url 'login' %}">Login</a>
+    </div>
+  </div>
+
+<style>
+ .padding{
+          padding:180px;
+          position  : relative;
+          width     : 100%;
+          height    : 100%;
+          }
+
+</style>
+
+
+
+{% endblock  %}

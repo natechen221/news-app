@@ -1,0 +1,33 @@
+{% extends 'myNews/base.html' %}
+
+{% load static %}
+{% block content %}
+<div class="container-fluid">
+	<div class="padding" >
+		<form method="POST" action="">
+			{% csrf_token %}
+			<h1 id="form-title">LOGIN</h1>
+			<div class="form-group">
+				<input type="text" name="username" placeholder="Username..." class="form-control">
+			</div>
+			<div class="form-group">
+				<input type="password" name="password" placeholder="Password..." class="form-control" >
+			</div>
+			{{form.errors}}
+			<button type="submit" class="btn btn-primary" name="Create User">Login</button>
+		</form>
+		{%for message in messages%}
+			<p>{{message}}</p>
+		{%endfor%}
+		<div>
+			Don't have an account? <a href="{% url 'register' %}">Sign Up</a>
+		</div>
+	</div>
+</div>
+<style>
+	.padding{
+		 padding:300px;
+	}
+</style>
+
+{% endblock  %}

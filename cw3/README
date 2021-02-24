@@ -1,0 +1,37 @@
+Group 10 Member:
+We worked on the project altogether. 
+Name: Hao Chen			Email: hao.chen@hss17.qmul.ac.uk
+Name: Chinnakrit Techakanok	Email: c.techakanok@se18.qmul.ac.uk
+Name: Tsz Lam Seto 		Email:t.l.seto@se18.qmul.ac.uk 
+
+
+Deployed URL: https://group10news-group10news.apps.okd.eecs.qmul.ac.uk/
+
+- Uses Python 3.7 and Django 3.1
+- Need to install pillow
+
+---Email-----------------------
+username: teamtencw3@gmail.com
+password: teamtencw3@123
+
+
+---Login-----------------------
+Admin
+username: admin
+password: admin
+
+
+Testing Users1:
+username: anson
+password: ansonson28
+
+Testing Users2:
+username: nate
+password: nateson28
+
+Testing Users3:
+username: qq
+password: qqqqson28
+
+
+

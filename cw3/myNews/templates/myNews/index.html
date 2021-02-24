@@ -1,0 +1,61 @@
+{% extends 'myNews/base.html' %}
+<head>
+  <link rel="stylesheet" href="styles.css">
+</head>
+{% load static %}
+{% block content %}
+{%include 'myNews/nav.html'%}
+    <div class="container">
+      <div class="row">
+        {% if user.userprofile.favorite_category.count == 0 %}
+          {% for category in categories %}
+            {% if category.size != 0 %}
+              <div class="container" style="width: 100%; height: 100%" id="name" >
+                <h2>{{category.name}}</h2>
+              </div>
+              {% for article in category.articles.all %}
+                <div class="col-4 mt-3">
+                  <div class="card" style="width: 100%; height: 100%" >
+                    <img src="/static/img/{{article.article_pictures}}" class="card-img-top">
+                    <div class="card-body">
+                      <h6 class="card-title">{{article.title}}</h6>
+                      <p class="card-text">{{article.author}}</p>
+                      <a href="{% url 'news' article.id %}" class="btn btn-primary btn-news">See the article</a>
+                    </div>
+                  </div>
+                </div><br>
+              {% endfor %}
+            {% endif %}
+          {% endfor %}
+        {% elif user.userprofile.favorite_category.count != 0 %}
+          {% for user_categories in user.userprofile.favorite_category.all %}
+            <div class="container"  style="width: 100%; height: 100%" id="name">
+              <h2>{{user_categories.name}}</h2>
+            </div>
+            {% for article in user_categories.articles.all %}
+            <div class="col-4 mt-3">
+              <div class="card" style="width: 100%;height: 100%">
+                <img src="/static/img/{{article.article_pictures}}" class="card-img-top">
+                <div class="card-body">
+                  <h6 class="card-title">{{article.title}}</h6>
+                  <p class="card-text">{{article.author}}</p>
+                  <a href="{% url 'news' article.id %}" class="btn btn-primary btn-news">See the article</a>
+                </div>
+              </div>
+            </div><br>
+            {% endfor %}
+          {% endfor %}
+        {% endif %}
+      </div>
+    </div>
+
+
+
+{% include "myNews/ajax.html" %}
+<style>
+#name{
+   padding-top:10px
+}
+</style>
+
+{% endblock  %}

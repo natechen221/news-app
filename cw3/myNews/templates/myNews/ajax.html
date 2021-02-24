@@ -1,0 +1,171 @@
+<script>
+    $('.btn-news').click(function(){
+        var id = $(this).attr("data-id")
+        console.log(typeof(id));
+
+    })
+
+    $('#post_button').click(function(){
+        var csr = $("input[name=csrfmiddlewaretoken]").val();
+        var content = $("#id_content").val()
+        var content_type = $("#id_content_type").val()
+        var object_id = $("#id_object_id").val()
+
+        if(content == ""){
+            alert("Please write comment")
+        }
+        else{
+            let mydata = {
+                content:content,
+                content_type:content_type,
+                object_id:object_id,
+                csrfmiddlewaretoken: csr,
+            }
+
+            $.ajax({
+                url: "{% url 'post_comment' %}",
+                method: "POST",
+                data: mydata,
+                dataType: "json",
+                success: function(data){
+                    if(data.status == 1){
+                        location.reload()
+                    }
+                    if(data.status == 0){
+                        alert('failed comment')
+                    }
+                }
+            })
+        }
+    })
+
+    //reply button
+    $('.comment-reply-btn').click(function(event){
+        event.preventDefault();
+        $(this).parent().next('.comment-reply').fadeToggle();
+    })
+
+    //reply post
+    $('.btn-reply').click(function(){
+        var comment_id = $(this).attr("data-sid")
+        x = 'comment-id' + comment_id
+
+        var content = $('#'+x).val()
+        var content_type = $("#id_content_type").val()
+        var object_id = $("#id_object_id").val()
+        var csr = $("input[name=csrfmiddlewaretoken]").val();
+
+        if(content == ""){
+            alert("Please write comment")
+        }
+
+        else{
+            let mydata = {
+                content:content,
+                content_type:content_type,
+                object_id:object_id,
+                parent_id:comment_id,
+                csrfmiddlewaretoken: csr,
+            }
+
+            $.ajax({
+                url: "{% url 'reply_comment' %}",
+                method: "POST",
+                data: mydata,
+                dataType: "json",
+                success: function(data){
+                    if(data.status == 1){
+                        location.reload()
+                    }
+                    if(data.status == 0){
+                        alert('failed comment')
+                    }
+                }
+            })
+        }
+    })
+
+    // delete comment
+    $('.comment-delete-btn').click(function(event){
+    event.preventDefault();
+    // var choice = confirm('Are you sure you want to delete?')
+        var comment_id = $(this).attr("comment-id")
+        var csr = $("input[name=csrfmiddlewaretoken]").val();
+        var mydata = {comment_id: comment_id, csrfmiddlewaretoken: csr}
+
+        $.ajax({
+            url:"{% url 'delete_comment' %}",
+            method: "DELETE",
+            data:mydata,
+            dataType:"json",
+            headers:{'X-CSRFToken':"{{ csrf_token }}"},
+            success:function(data){
+                if(data.status == 1){
+                    location.reload()
+                }
+                if(data.status == 0){
+                    alert('failed delete')
+                }
+            }
+        })
+    })
+
+    // Get edit comment info
+    $('#editModal').on('show.bs.modal', function (event) {
+        var button = $(event.relatedTarget)
+        var comment_id = button.data('comment')
+        var content = button.data('content')
+
+        var modal = $(this)
+        modal.find('.modal-body input').val(comment_id)
+        modal.find('.modal-body textarea').val(content)
+    })
+
+    // edit comment
+    $('.save-edit').click(function(){
+        var comment_id = $('.modal-body input').val()
+        var content = $('.modal-body textarea').val()
+        var csr = $("input[name=csrfmiddlewaretoken]").val();
+        var mydata = {comment_id: comment_id, content: content , csrfmiddlewaretoken: csr}
+
+        $.ajax({
+                url:"{% url 'edit_comment' %}",
+                method: "PUT",
+                data:mydata,
+                dataType:"json",
+                headers:{'X-CSRFToken':"{{ csrf_token }}"},
+                success:function(data){
+                    if(data.status == 1){
+                        location.reload()
+                    }
+                    if(data.status == 0){
+                        alert('failed edit')
+                    }
+                }
+            })
+    })
+
+    // like article
+    $('#like').click(function(){
+        var csr = $("input[name=csrfmiddlewaretoken]").val();
+        var article_id = $(this).attr('data-article')
+
+        var mydata = {article_id: article_id, csrfmiddlewaretoken: csr}
+        $.ajax({
+                url:"{% url 'like_article' %}",
+                method: "POST",
+                data:mydata,
+                dataType:"json",
+                success:function(data){
+                    if(data.status == 1){
+                        location.reload()
+                    }
+                    if(data.status == 0){
+                        alert('failed liked')
+                    }
+                }
+            })
+    })
+
+
+</script>
